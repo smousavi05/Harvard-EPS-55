@@ -1,4 +1,4 @@
-# Harvard EPS55
+# Harvard Harvard-EPS-55
 
 ## Interactive Visualizations
 
@@ -15,12 +15,12 @@
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l01_earth_human_timeline.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l01_earth_human_timeline.html">
         <img src="interactive_visualizations/viz__l01_earth_human_timeline.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l01_earthquake-death.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l01_earthquake-death.html">
         <img src="interactive_visualizations/viz__l01_earthquake-death.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -39,17 +39,17 @@
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l02_fault_types.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l02_fault_types.html">
         <img src="interactive_visualizations/viz__l02_fault_types.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l02_fault_strik_dip_rake.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l02_fault_strik_dip_rake.html">
         <img src="interactive_visualizations/viz__l02_fault_strik_dip_rake.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l02_coulomb_criterion.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l02_coulomb_criterion.html">
         <img src="interactive_visualizations/viz__l02_coulomb_criterion.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -79,27 +79,27 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l06_coseismic_calculator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l06_coseismic_calculator.html">
         <img src="interactive_visualizations/viz__l06_coseismic_calculator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l06_earthquake_cycle.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l06_earthquake_cycle.html">
         <img src="interactive_visualizations/viz__l06_earthquake_cycle.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l06_spring_block_model.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l06_spring_block_model.html">
         <img src="interactive_visualizations/viz__l06_spring_block_model.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l06_timepredictable_slippredictable.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l06_timepredictable_slippredictable.html">
         <img src="interactive_visualizations/viz__l06_timepredictable_slippredictable.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l06_rate_and_state.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l06_rate_and_state.html">
         <img src="interactive_visualizations/viz__l06_rate_and_state.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -121,27 +121,27 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_apparent_rupture.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_apparent_rupture.html">
         <img src="interactive_visualizations/viz__l07_apparent_rupture.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_directivity_1.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_directivity_1.html">
         <img src="interactive_visualizations/viz__l07_directivity_1.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_directivity_2.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_directivity_2.html">
         <img src="interactive_visualizations/viz__l07_directivity_2.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_nucleation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_nucleation.html">
         <img src="interactive_visualizations/viz__l07_nucleation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_rupture_dynamics.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_rupture_dynamics.html">
         <img src="interactive_visualizations/viz__l07_rupture_dynamics.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -157,17 +157,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_haskell_source_model.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_haskell_source_model.html">
         <img src="interactive_visualizations/viz__l07_haskell_source_model.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_source_time_function_1.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_source_time_function_1.html">
         <img src="interactive_visualizations/viz__l07_source_time_function_1.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l07_source_time_function_2.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_source_time_function_2.html">
         <img src="interactive_visualizations/viz__l07_source_time_function_2.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -187,17 +187,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l08_seismic_phase_racing.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l08_seismic_phase_racing.html">
         <img src="interactive_visualizations/viz__l08_seismic_phase_racing.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l08_seismic_wave_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l08_seismic_wave_simulator.html">
         <img src="interactive_visualizations/viz__l08_seismic_wave_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l08_waves_propagation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l08_waves_propagation.html">
         <img src="interactive_visualizations/viz__l08_waves_propagation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -217,17 +217,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l09_das.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l09_das.html">
         <img src="interactive_visualizations/viz__l09_das.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l09_das_simulation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l09_das_simulation.html">
         <img src="interactive_visualizations/viz__l09_das_simulation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l09_gps_vs_insar.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l09_gps_vs_insar.html">
         <img src="interactive_visualizations/viz__l09_gps_vs_insar.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -247,17 +247,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/viz__l11_crossover_distance.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/viz__l11_crossover_distance.html">
         <img src="interactive_visualizations/viz__l11_crossover_distance.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l11_direct-vs-head-waves.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l11_direct-vs-head-waves.html">
         <img src="interactive_visualizations/viz__l11_direct-vs-head-waves.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l11_lg_wave.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l11_lg_wave.html">
         <img src="interactive_visualizations/viz__l11_lg_wave.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -273,17 +273,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l11_rayleigh-wave.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l11_rayleigh-wave.html">
         <img src="interactive_visualizations/viz__l11_rayleigh-wave.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l11_seismogram_viewer.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l11_seismogram_viewer.html">
         <img src="interactive_visualizations/viz__l11_seismogram_viewer.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l11_travel-time-curves.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l11_travel-time-curves.html">
         <img src="interactive_visualizations/viz__l11_travel-time-curves.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -303,17 +303,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_amplitude-threshold.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_amplitude-threshold.html">
         <img src="interactive_visualizations/viz__l12_detection_amplitude-threshold.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_sta-lta.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_sta-lta.html">
         <img src="interactive_visualizations/viz__l12_detection_sta-lta.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_cross-correlation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_cross-correlation.html">
         <img src="interactive_visualizations/viz__l12_detection_cross-correlation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -329,17 +329,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_template_matched.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_template_matched.html">
         <img src="interactive_visualizations/viz__l12_detection_template_matched.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_templateMatching_vs_similaritySearch.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_templateMatching_vs_similaritySearch.html">
         <img src="interactive_visualizations/viz__l12_templateMatching_vs_similaritySearch.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_fast.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_fast.html">
         <img src="interactive_visualizations/viz__l12_detection_fast.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -355,12 +355,12 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_ANN_a.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_ANN_a.html">
         <img src="interactive_visualizations/viz__l12_detection_ANN_a.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l12_detection_ANN_b.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l12_detection_ANN_b.html">
         <img src="interactive_visualizations/viz__l12_detection_ANN_b.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -382,27 +382,27 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l13_location_triangulation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l13_location_triangulation.html">
         <img src="interactive_visualizations/viz__l13_location_triangulation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l13_location_inverse-problems.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l13_location_inverse-problems.html">
         <img src="interactive_visualizations/viz__l13_location_inverse-problems.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l13_Location_gieger.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l13_Location_gieger.html">
         <img src="interactive_visualizations/viz__l13_Location_gieger.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l13_earthquake_location_methods.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l13_earthquake_location_methods.html">
         <img src="interactive_visualizations/viz__l13_earthquake_location_methods.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l13_location_relative_relocation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l13_location_relative_relocation.html">
         <img src="interactive_visualizations/viz__l13_location_relative_relocation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -424,27 +424,27 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l14_general_cumulative-seismic-moment.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l14_general_cumulative-seismic-moment.html">
         <img src="interactive_visualizations/viz__l14_general_cumulative-seismic-moment.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l14_magnitude_saturation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l14_magnitude_saturation.html">
         <img src="interactive_visualizations/viz__l14_magnitude_saturation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l14_magnitude_scale_comparison.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l14_magnitude_scale_comparison.html">
         <img src="interactive_visualizations/viz__l14_magnitude_scale_comparison.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l14_magnitude_scales-comparison2.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l14_magnitude_scales-comparison2.html">
         <img src="interactive_visualizations/viz__l14_magnitude_scales-comparison2.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l14_seismic_moment_calculator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l14_seismic_moment_calculator.html">
         <img src="interactive_visualizations/viz__l14_seismic_moment_calculator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -458,7 +458,7 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l14_magnitude_scale_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l14_magnitude_scale_simulator.html">
         <img src="interactive_visualizations/viz__l14_magnitude_scale_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -478,17 +478,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l15_seismology_focal_sphere.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l15_seismology_focal_sphere.html">
         <img src="interactive_visualizations/viz__l15_seismology_focal_sphere.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l15_3d_fault_beachball_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l15_3d_fault_beachball_simulator.html">
         <img src="interactive_visualizations/viz__l15_3d_fault_beachball_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l15_moment_tensor.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l15_moment_tensor.html">
         <img src="interactive_visualizations/viz__l15_moment_tensor.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -508,17 +508,17 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l16_coda_q_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l16_coda_q_simulator.html">
         <img src="interactive_visualizations/viz__l16_coda_q_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l16_east_vest_attenuation.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l16_east_vest_attenuation.html">
         <img src="interactive_visualizations/viz__l16_east_vest_attenuation.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l16_eismic_attenuation_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l16_eismic_attenuation_simulator.html">
         <img src="interactive_visualizations/viz__l16_eismic_attenuation_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -540,27 +540,27 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l17__site_amplification.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l17__site_amplification.html">
         <img src="interactive_visualizations/viz__l17__site_amplification.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l17_site_amplification_2.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l17_site_amplification_2.html">
         <img src="interactive_visualizations/viz__l17_site_amplification_2.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l17_building_failure_encyclopedia.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l17_building_failure_encyclopedia.html">
         <img src="interactive_visualizations/viz__l17_building_failure_encyclopedia.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l17_shakemap_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l17_shakemap_simulator.html">
         <img src="interactive_visualizations/viz__l17_shakemap_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l17_amplificaiton_and_building_resonance.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l17_amplificaiton_and_building_resonance.html">
         <img src="interactive_visualizations/viz__l17_amplificaiton_and_building_resonance.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
@@ -582,27 +582,27 @@ Understand the physics - why normal stress increases shear resistance
   
   <tr align="center">
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l18_gutenberg_richter_tool.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l18_gutenberg_richter_tool.html">
         <img src="interactive_visualizations/viz__l18_gutenberg_richter_tool.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l18_gr_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l18_gr_simulator.html">
         <img src="interactive_visualizations/viz__l18_gr_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l18__omori_law.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l18__omori_law.html">
         <img src="interactive_visualizations/viz__l18__omori_law.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l18_omori_law_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l18_omori_law_simulator.html">
         <img src="interactive_visualizations/viz__l18_omori_law_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/EPS55/interactive_visualizations/viz__l18_stress_triggering_simulator.html">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l18_stress_triggering_simulator.html">
         <img src="interactive_visualizations/viz__l18_stress_triggering_simulator.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
