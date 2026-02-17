@@ -1,4 +1,5 @@
-# Harvard EPS55
+# **Harvard EPS-55**: An Introduction to Earthquake Seismology
+  **Instructor**: Mostafa Mouasvi
 
 
 ## Interactive Visualizations
