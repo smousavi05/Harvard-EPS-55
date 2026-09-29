@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthquake Nucleation: Cascade (Domino Stress-Transfer) Model</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- KaTeX Math Formatting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              950: '#020617',
+            },
+            cascade: {
+              event1: '#38bdf8',
+              event2: '#f59e0b',
+              event3: '#ec4899',
+              rupture: '#ef4444',
+              stress: '#10b981',
+              asperity: '#a855f7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(168, 85, 247, 0.5);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(168, 85, 247, 0.8);
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn.active {
+      background-color: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.6);
+      color: #c084fc;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
+
+  <!-- Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 bg-gradient-to-tr from-purple-600 via-pink-600 to-red-600 rounded-xl shadow-lg shadow-purple-500/20 text-white">
+          <i class="fa-solid fa-cubes-stacked text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-pink-300 to-red-400">
+            Earthquake Nucleation: Cascade Model
+          </h1>
+        <h2 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-pink-300 to-red-400">
+            Harvard EPS55
+          </h2>
+          <h2 class="text-xs font-semibold text-purple-300/90 flex items-center gap-1.5">
+            <span>Domino Stress-Transfer Chain Sequence</span>
+            <span class="px-1.5 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 text-[10px]">Foreshocks -> Mainshock Breakout</span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="flex items-center space-x-2">
+        <button id="btn-audio-toggle" class="text-xs px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-2">
+          <i id="audio-icon" class="fa-solid fa-volume-xmark text-slate-400"></i>
+          <span id="audio-label">Seismic Audio Off</span>
+        </button>
+        <button id="btn-guide-modal" class="text-xs px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-purple-400"></i>
+          <span>Model Theory</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Main Column: Canvas Views (8 cols) -->
+    <div class="lg:col-span-8 flex flex-col space-y-4">
+
+      <!-- View Selector Tabs -->
+      <div class="flex items-center justify-between bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 text-xs">
+        <div class="flex items-center space-x-1">
+          <button id="tab-space-time" class="tab-btn active px-3 py-1.5 rounded-lg border border-transparent font-medium transition flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-area text-purple-400"></i>
+            <span>Space-Time (x-t) Cascade</span>
+          </button>
+          <button id="tab-fault-asperities" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent font-medium transition flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-nodes text-pink-400"></i>
+            <span>Asperity Chain & Stress Field</span>
+          </button>
+          <button id="tab-profiles" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent font-medium transition flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i>
+            <span>Stress Profile & Moment Growth</span>
+          </button>
+        </div>
+
+        <div class="hidden sm:flex items-center space-x-3 text-[11px] text-slate-400 font-mono pr-2">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Sub-event 1</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Foreshock Chain</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Final Mainshock</span>
+        </div>
+      </div>
+
+      <!-- Main Interactive Canvas Card -->
+      <div class="glass-panel rounded-2xl p-4 shadow-2xl relative overflow-hidden flex flex-col border border-slate-800">
+        
+        <!-- Status Header Banner -->
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-2">
+            <span id="phase-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+              Event 1: Nucleating Foreshock M1
+            </span>
+            <span id="time-display" class="text-xs font-mono text-slate-400">t = 0.00 s</span>
+          </div>
+
+          <div class="flex items-center space-x-3 text-xs">
+            <span class="text-slate-400">Sub-events triggered:</span>
+            <span id="hud-subevents" class="font-mono text-amber-400 font-bold">1 / 5</span>
+            <span class="text-slate-500">|</span>
+            <span class="text-slate-400">Cum. Moment (M0):</span>
+            <span id="hud-moment" class="font-mono text-pink-400 font-bold">1.2e13 N·m</span>
+          </div>
+        </div>
+
+        <!-- Primary Drawing Canvas -->
+        <div class="relative w-full aspect-[16/9] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden shadow-inner flex items-center justify-center">
+          <canvas id="mainCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+          <!-- On-Canvas Floating HUD Info -->
+          <div class="absolute bottom-3 left-3 bg-slate-900/85 backdrop-blur border border-slate-800 p-2.5 rounded-lg text-xs space-y-1 text-slate-300 pointer-events-none shadow-lg">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-slate-400">Active Rupture Patch:</span>
+              <span id="hud-active-patch" class="font-mono text-purple-400 font-bold">Asperity #1</span>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-slate-400">Peak Stress Transfer (Delta CFF):</span>
+              <span id="hud-stress-transfer" class="font-mono text-emerald-400 font-bold">+2.25 MPa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Playback Controls Bar -->
+        <div class="mt-4 bg-slate-900/90 rounded-xl p-3 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between gap-3">
+            
+            <!-- Controls Buttons -->
+            <div class="flex items-center space-x-1">
+              <button id="btn-restart" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Reset Cascade">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+              <button id="btn-step-back" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Step Back">
+                <i class="fa-solid fa-backward-step"></i>
+              </button>
+              <button id="btn-play" class="p-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white transition shadow-lg shadow-purple-600/30" title="Play/Pause">
+                <i id="play-icon" class="fa-solid fa-pause"></i>
+              </button>
+              <button id="btn-step-fwd" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Step Forward">
+                <i class="fa-solid fa-forward-step"></i>
+              </button>
+              <button id="btn-loop" class="p-2 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30 transition" title="Toggle Loop">
+                <i class="fa-solid fa-repeat"></i>
+              </button>
+            </div>
+
+            <!-- Timeline Scrubber Slider -->
+            <div class="flex-1 px-2 flex items-center space-x-3">
+              <span class="text-xs text-slate-500 font-mono">0%</span>
+              <input type="range" id="timeline-scrubber" min="0" max="1000" value="0" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
+              <span class="text-xs text-slate-500 font-mono">100%</span>
+            </div>
+
+            <!-- Speed Multiplier Dropdown -->
+            <div class="flex items-center space-x-1 bg-slate-800 rounded-lg p-1 text-xs">
+              <span class="text-slate-400 px-1"><i class="fa-solid fa-gauge-high"></i></span>
+              <select id="speed-select" class="bg-transparent text-slate-200 outline-none font-medium cursor-pointer">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1.0" selected>1.0x</option>
+                <option value="2.0">2.0x</option>
+                <option value="4.0">4.0x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar Column: Presets & Controls (4 cols) -->
+    <div class="lg:col-span-4 flex flex-col space-y-4">
+
+      <!-- Preset Selector Panel -->
+      <div class="glass-panel rounded-xl p-4 border border-slate-800 space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-purple-400"></i> Fault & Cascade Presets
+        </h2>
+        <div class="grid grid-cols-1 gap-2 text-xs">
+          <button data-preset="standard" class="btn-preset active p-2.5 rounded-lg border border-purple-500/50 bg-purple-500/10 hover:bg-purple-500/20 text-left transition">
+            <div class="font-semibold text-purple-300 flex items-center justify-between">
+              <span>Standard Domino Cascade</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-900/80 text-purple-200">Foreshocks --> Mainshock</span>
+            </div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Discrete foreshocks trigger adjacent patches sequentially leading to mainshock breakout</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Cascade Physics Slider Card -->
+      <div class="glass-panel rounded-xl p-4 border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-atom text-emerald-400"></i> Cascade Physics Parameters
+          </h2>
+          <button id="btn-reset-params" class="text-[10px] text-slate-400 hover:text-slate-200 underline">Reset</button>
+        </div>
+
+        <!-- Slider 1: Stress Drop Delta Tau -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Sub-event Stress Drop:</label>
+            <span id="val-delta-tau" class="font-mono text-emerald-400 font-bold">3.0 MPa</span>
+          </div>
+          <input type="range" id="param-delta-tau" min="1" max="10" value="3" step="0.5" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-emerald-500">
+          <p class="text-[10px] text-slate-500">Shear stress released by each small failing sub-event.</p>
+        </div>
+
+        <!-- Slider 2: Asperity Gap / Distance -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Asperity Spacing (d):</label>
+            <span id="val-gap" class="font-mono text-amber-400 font-bold">0.35 km</span>
+          </div>
+          <input type="range" id="param-gap" min="15" max="60" value="35" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-amber-500">
+          <p class="text-[10px] text-slate-500">Distance between adjacent locked fault asperities.</p>
+        </div>
+
+        <!-- Slider 3: Fault Strength Threshold -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Fault Strength Threshold:</label>
+            <span id="val-strength" class="font-mono text-purple-400 font-bold">12.0 MPa</span>
+          </div>
+          <input type="range" id="param-strength" min="8" max="20" value="12" step="0.5" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-purple-500">
+          <p class="text-[10px] text-slate-500">Shear stress required to trigger an adjacent locked patch.</p>
+        </div>
+
+        <!-- Slider 4: Stress Transfer Sensitivity Factor -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Stress Transfer Kernel (gamma):</label>
+            <span id="val-gamma" class="font-mono text-pink-400 font-bold">0.75</span>
+          </div>
+          <input type="range" id="param-gamma" min="25" max="100" value="75" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-pink-500">
+        </div>
+
+      </div>
+
+      <!-- Stage Explanatory Walkthrough Box -->
+      <div class="glass-panel rounded-xl p-4 border border-slate-800 space-y-3">
+        <div class="flex items-center space-x-2 text-purple-400 font-bold text-xs uppercase tracking-wider">
+          <i class="fa-solid fa-diagram-next"></i>
+          <span id="stage-title">Event 1: Nucleating Foreshock M1</span>
+        </div>
+        <p id="stage-desc" class="text-xs text-slate-300 leading-relaxed">
+          Initial seismic rupture begins on a small micro-asperity. The event drops shear stress locally ($\Delta \tau$) while radiating elastic strain waves.
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Theory Guided Dialog Modal -->
+  <div id="guide-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 text-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-purple-400 flex items-center gap-2">
+          <i class="fa-solid fa-book-open"></i> The Cascade Model of Earthquake Nucleation
+        </h3>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs leading-relaxed text-slate-300">
+        <p>
+          In earthquake physics, the <strong>Cascade Model</strong> posits that large earthquakes originate as ordinary micro-earthquakes (foreshocks) on discrete fault patches. Rather than requiring a large pre-existing slow-slip zone, mainshocks grow via a <strong>domino-like static and dynamic stress transfer chain reaction</strong>.
+        </p>
+
+        <div class="bg-slate-950/80 p-3 rounded-lg border border-slate-800 space-y-2 font-mono text-[11px]">
+          <div class="text-purple-300 font-bold">Key Cascade Principles:</div>
+          <ol class="list-decimal list-inside space-y-1 text-slate-300">
+            <li><strong>Discrete Sub-Events (M1, M2, ...):</strong> Small locked asperities rupture seismically, dropping local stress ($\Delta \tau$).</li>
+            <li><strong>Coulomb Stress Transfer ($\Delta \text{CFF}$):</strong> Slip on $M_i$ increases shear stress concentration on neighboring locked fault patches.</li>
+            <li><strong>Progressive Failure Chain:</strong> If adjacent patch stress reaches critical strength ($\tau + \Delta \text{CFF} \ge \tau_{\text{crit}}$), it ruptures, generating foreshock $M_{i+1}$.</li>
+            <li><strong>Runaway Mainshock Breakdown:</strong> As progressively larger adjacent patches fail in sequence, total seismic moment $M_0$ escalates rapidly into an uncontained dynamic mainshock.</li>
+          </ol>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2 text-[11px]">
+          <div class="p-2.5 bg-slate-950/60 rounded-lg border border-purple-900/40">
+            <div class="font-bold text-purple-300 mb-1">Cascade Model</div>
+            <ul class="list-disc list-inside space-y-0.5 text-slate-400">
+              <li>Driven by discrete <i>seismic</i> foreshocks</li>
+              <li>Stress transfer ($\Delta \text{CFF}$) between patches</li>
+              <li>No fixed pre-slip size required</li>
+              <li>Culminates in dynamic mainshock rupture</li>
+            </ul>
+          </div>
+          <div class="p-2.5 bg-slate-950/60 rounded-lg border border-amber-900/40">
+            <div class="font-bold text-amber-300 mb-1">Pre-Slip Model</div>
+            <ul class="list-disc list-inside space-y-0.5 text-slate-400">
+              <li>Driven by continuous <i>aseismic</i> slow-slip</li>
+              <li>Requires critical patch length Lc ~ sigma_n^-1}$</li>
+              <li>Foreshocks are secondary passive failures</li>
+              <li>Unstable breakdown occurs when L > Lc</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button id="btn-dismiss-modal" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-semibold shadow-lg transition">
+          Explore Interactive Model
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Earthquake Cascade Model Simulation Engine */
+    (function() {
+      // Canvas references
+      const mainCanvas = document.getElementById('mainCanvas');
+      const ctxMain = mainCanvas.getContext('2d');
+
+      // State Variables
+      let isPlaying = true;
+      let isLooping = true;
+      let audioEnabled = false;
+      let activeTab = 'space-time'; // 'space-time', 'fault-asperities', 'profiles'
+      let currentStep = 0; // 0 to 1000
+      let animationSpeed = 1.0;
+      let lastTimestamp = 0;
+      let lastPlayedStage = 0;
+
+      // Web Audio API Synth for Seismic Sound Effects
+      let audioCtx = null;
+
+      function playSeismicSound(frequency = 120, duration = 0.15, isMainshock = false) {
+        if (!audioEnabled) return;
+        try {
+          if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = isMainshock ? 'sawtooth' : 'sine';
+          osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(isMainshock ? 30 : 40, audioCtx.currentTime + duration);
+
+          gain.gain.setValueAtTime(isMainshock ? 0.4 : 0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {
+          console.warn('Audio play error:', e);
+        }
+      }
+
+      // Cascade Physics Parameters
+      let params = {
+        delta_tau: 3.0,     // Sub-event stress drop (MPa)
+        gap: 0.35,          // Asperity spacing (km)
+        strength: 12.0,     // Fault shear strength threshold (MPa)
+        gamma: 0.75,        // Stress transfer efficiency kernel factor
+        faultLengthKm: 3.0
+      };
+
+      // Define Discrete Fault Asperity Patches for the Cascade
+      let asperities = [];
+
+      function initAsperities(preset = 'standard') {
+        asperities = [];
+        const count = 5;
+        const totalW = (count - 1) * params.gap;
+        const startX = -totalW / 2;
+
+        for (let i = 0; i < count; i++) {
+          let customStrength = params.strength + (i === 4 ? 0.5 : 0.0);
+          let customInitialStress = 9.8 + Math.sin(i * 1.2) * 0.8;
+          let patchRadius = 0.12 + i * 0.04;
+
+          // Sub-events 1-4 are foreshocks; Event 5 triggers the runaway mainshock (huge moment)
+          const isMainshockPatch = i === 4;
+          const momentVal = isMainshockPatch ? 3.5e19 : Math.pow(10, 13 + i * 0.6); // N·m
+
+          asperities.push({
+            id: i + 1,
+            x: startX + i * params.gap,
+            radius: patchRadius,
+            strength: customStrength,
+            currentStress: customInitialStress,
+            initialStress: customInitialStress,
+            failed: false,
+            failureTimeStep: null,
+            moment: momentVal,
+            isMainshock: isMainshockPatch
+          });
+        }
+      }
+
+      // Initialize Canvas DPR Resolution
+      function resizeCanvases() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = mainCanvas.getBoundingClientRect();
+        mainCanvas.width = rect.width * dpr;
+        mainCanvas.height = rect.height * dpr;
+        ctxMain.scale(dpr, dpr);
+      }
+
+      window.addEventListener('resize', resizeCanvases);
+
+      // Compute Simulation Cascade State at step (0 -> 1000)
+      function getSimulationState(step) {
+        const normTime = step / 1000; // 0.0 to 1.0
+
+        let stage = 1;
+        let activePatchIndex = 0;
+        let subEventsTriggered = 1;
+        let stageName = 'Foreshock 1: Initial Micro-Asperity Failure';
+        let stageBadgeClass = 'bg-sky-500/20 text-sky-300 border-sky-500/30';
+        let stressTransferVal = params.delta_tau * params.gamma;
+
+        if (normTime < 0.18) {
+          stage = 1;
+          activePatchIndex = 0;
+          subEventsTriggered = 1;
+          stageName = 'Foreshock 1: Initial Micro-Asperity Failure (Mw 1.2)';
+          stageBadgeClass = 'bg-sky-500/20 text-sky-300 border-sky-500/30';
+        } else if (normTime < 0.38) {
+          stage = 2;
+          activePatchIndex = 1;
+          subEventsTriggered = 2;
+          stageName = 'Foreshock 2: Domino Stress Transfer Trigger (Mw 1.9)';
+          stageBadgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+        } else if (normTime < 0.58) {
+          stage = 3;
+          activePatchIndex = 2;
+          subEventsTriggered = 3;
+          stageName = 'Foreshock 3: Cascade Growth & Patch Loading (Mw 2.5)';
+          stageBadgeClass = 'bg-pink-500/20 text-pink-300 border-pink-500/30';
+        } else if (normTime < 0.78) {
+          stage = 4;
+          activePatchIndex = 3;
+          subEventsTriggered = 4;
+          stageName = 'Foreshock 4: Pre-Mainshock Asperity Snap (Mw 3.1)';
+          stageBadgeClass = 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+        } else {
+          stage = 5;
+          activePatchIndex = 4;
+          subEventsTriggered = 5;
+          stageName = 'MAINSHOCK BREAKOUT: Dynamic Runaway Rupture (Mw 7.1)';
+          stageBadgeClass = 'bg-red-500/30 text-red-300 border-red-500/50 font-bold animate-pulse';
+        }
+
+        // Trigger Audio Snap on Stage Transition
+        if (stage !== lastPlayedStage && isPlaying) {
+          lastPlayedStage = stage;
+          const isMain = stage === 5;
+          playSeismicSound(100 + stage * 40, isMain ? 0.6 : 0.12, isMain);
+        }
+
+        // Calculate cumulative moment
+        let cumMoment = 0;
+        for (let i = 0; i < subEventsTriggered; i++) {
+          cumMoment += asperities[i].moment;
+        }
+
+        return {
+          normTime,
+          stage,
+          activePatchIndex,
+          subEventsTriggered,
+          stageName,
+          stageBadgeClass,
+          stressTransferVal,
+          cumMoment,
+          isMainshock: stage === 5
+        };
+      }
+
+      // Master Canvas Render Dispatcher
+      function renderMainCanvas(state) {
+        const w = mainCanvas.clientWidth;
+        const h = mainCanvas.clientHeight;
+        ctxMain.clearRect(0, 0, w, h);
+
+        if (activeTab === 'space-time') {
+          renderSpaceTimeCascade(ctxMain, w, h, state);
+        } else if (activeTab === 'fault-asperities') {
+          renderFaultAsperitiesView(ctxMain, w, h, state);
+        } else if (activeTab === 'profiles') {
+          renderProfilesView(ctxMain, w, h, state);
+        }
+      }
+
+      // 1. Space-Time (x - t) Cascade Diagram
+      function renderSpaceTimeCascade(ctx, w, h, state) {
+        const padding = { left: 55, right: 35, top: 40, bottom: 40 };
+        const graphW = w - padding.left - padding.right;
+        const graphH = h - padding.top - padding.bottom;
+
+        // Dark background
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, w, h);
+
+        // Grid lines
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        for (let y = padding.top; y <= h - padding.bottom; y += graphH / 5) {
+          ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(w - padding.right, y); ctx.stroke();
+        }
+        for (let x = padding.left; x <= w - padding.right; x += graphW / 6) {
+          ctx.beginPath(); ctx.moveTo(x, padding.top); ctx.lineTo(x, h - padding.bottom); ctx.stroke();
+        }
+
+        // Axis Titles
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Fault Position x (km)', padding.left + graphW / 2, h - 10);
+
+        ctx.save();
+        ctx.translate(15, padding.top + graphH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('Time t (seconds)', 0, 0);
+        ctx.restore();
+
+        const centerX = padding.left + graphW / 2;
+
+        // Draw foreshocks and stress transfer rays
+        for (let i = 0; i < state.subEventsTriggered; i++) {
+          const asp = asperities[i];
+          const px = centerX + (asp.x / params.faultLengthKm) * (graphW / 2);
+          const eventNormTime = (i * 0.20) + 0.08;
+          const py = (h - padding.bottom) - (eventNormTime * graphH);
+
+          // Render stress transfer vectors to neighboring patch
+          if (i < asperities.length - 1) {
+            const nextAsp = asperities[i + 1];
+            const nextPx = centerX + (nextAsp.x / params.faultLengthKm) * (graphW / 2);
+            const nextTime = ((i + 1) * 0.20) + 0.08;
+            const nextPy = (h - padding.bottom) - (nextTime * graphH);
+
+            ctx.strokeStyle = i === 3 ? 'rgba(239, 68, 68, 0.9)' : 'rgba(245, 158, 11, 0.8)';
+            ctx.lineWidth = i === 3 ? 2.5 : 2;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(nextPx, nextPy);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw stress transfer directional arrow point
+            const midX = (px + nextPx) / 2;
+            const midY = (py + nextPy) / 2;
+            ctx.fillStyle = i === 3 ? '#ef4444' : '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(midX, midY, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Sub-event Rupture Envelope Circle
+          let eventColor = '#38bdf8';
+          if (i === 1) eventColor = '#f59e0b';
+          if (i === 2) eventColor = '#ec4899';
+          if (i === 3) eventColor = '#c084fc';
+          if (i === 4) eventColor = '#ef4444'; // Mainshock
+
+          if (i < 4) { // Foreshocks
+            const radius = 8 + i * 3.5;
+
+            ctx.beginPath();
+            ctx.arc(px, py, radius, 0, Math.PI * 2);
+            ctx.fillStyle = eventColor;
+            ctx.globalAlpha = 0.85;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Sub-event Label
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = '10px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`M${(1.2 + i * 0.7).toFixed(1)}`, px, py - radius - 4);
+          } else { // MAINSHOCK Breakout Wedge
+            const progressInMainshock = Math.min(1.0, (state.normTime - 0.78) / 0.22);
+            const mainshockWedgeW = graphW * 0.85 * progressInMainshock;
+
+            // Expanding dynamic rupture wedge across full fault
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(px - mainshockWedgeW / 2, padding.top);
+            ctx.lineTo(px + mainshockWedgeW / 2, padding.top);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Mainshock Epicenter Star
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(px, py, 14, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('MAINSHOCK Mw 7.1', px, py - 18);
+          }
+        }
+
+        // Draw Current Time Line
+        const currentY = (h - padding.bottom) - (state.normTime * graphH);
+        ctx.strokeStyle = state.isMainshock ? '#ef4444' : '#a855f7';
+        ctx.lineWidth = state.isMainshock ? 2 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, currentY);
+        ctx.lineTo(w - padding.right, currentY);
+        ctx.stroke();
+
+        ctx.fillStyle = state.isMainshock ? '#fca5a5' : '#c084fc';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(`t = ${(currentStep * 0.08).toFixed(2)} s`, padding.left + 5, currentY - 5);
+      }
+
+      // 2. Fault Asperity Chain & Coulomb Stress Field View
+      function renderFaultAsperitiesView(ctx, w, h, state) {
+        const centerY = h * 0.48;
+        const faultStart = w * 0.10;
+        const faultEnd = w * 0.90;
+        const faultW = faultEnd - faultStart;
+        const centerX = w * 0.5;
+
+        // Fault blocks background
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, centerY);
+        ctx.fillStyle = '#090d16';
+        ctx.fillRect(0, centerY, w, h - centerY);
+
+        // Fault Plane Interface Line
+        ctx.strokeStyle = state.isMainshock ? '#ef4444' : '#334155';
+        ctx.lineWidth = state.isMainshock ? 4 : 3;
+        ctx.beginPath();
+        ctx.moveTo(faultStart, centerY);
+        ctx.lineTo(faultEnd, centerY);
+        ctx.stroke();
+
+        // Mainshock full fault rupture aura
+        if (state.isMainshock) {
+          const mainGlow = ctx.createLinearGradient(faultStart, 0, faultEnd, 0);
+          mainGlow.addColorStop(0, 'rgba(239, 68, 68, 0)');
+          mainGlow.addColorStop(0.5, 'rgba(239, 68, 68, 0.4)');
+          mainGlow.addColorStop(1, 'rgba(239, 68, 68, 0)');
+
+          ctx.fillStyle = mainGlow;
+          ctx.fillRect(faultStart, centerY - 35, faultW, 70);
+
+          ctx.fillStyle = '#ef4444';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('RUNAWAY DYNAMIC MAINSHOCK RUPTURE (Full Fault Unstable Slip)', centerX, centerY - 60);
+        }
+
+        // Animated Stress Transfer Wave Front between patches
+        if (state.activePatchIndex > 0 && state.activePatchIndex < 4) {
+          const prevAsp = asperities[state.activePatchIndex - 1];
+          const currAsp = asperities[state.activePatchIndex];
+          const prevPx = centerX + (prevAsp.x / params.faultLengthKm) * faultW;
+          const currPx = centerX + (currAsp.x / params.faultLengthKm) * faultW;
+
+          const progress = ((currentStep % 200) / 200);
+          const waveX = prevPx + (currPx - prevPx) * progress;
+
+          // Wave pulse
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(waveX, centerY, 15 * (1 - progress), 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Transfer Vector Arrow
+          ctx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(prevPx, centerY - 25);
+          ctx.quadraticCurveTo((prevPx + currPx) / 2, centerY - 45, currPx, centerY - 25);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = '#f59e0b';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(`+${(params.delta_tau * params.gamma).toFixed(1)} MPa (ΔCFF)`, (prevPx + currPx) / 2, centerY - 50);
+        }
+
+        // Render Asperities
+        asperities.forEach((asp, idx) => {
+          const px = centerX + (asp.x / params.faultLengthKm) * faultW;
+          const radiusPixels = asp.isMainshock ? 22 : (12 + idx * 4);
+
+          const isFailed = idx < state.subEventsTriggered;
+          const isActive = idx === state.activePatchIndex;
+
+          // Stress concentration lobe overlay
+          if (isActive && !asp.isMainshock) {
+            const lobeGrad = ctx.createRadialGradient(px, centerY, 5, px, centerY, radiusPixels * 3);
+            lobeGrad.addColorStop(0, 'rgba(239, 68, 68, 0.6)');
+            lobeGrad.addColorStop(0.5, 'rgba(245, 158, 11, 0.3)');
+            lobeGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+
+            ctx.fillStyle = lobeGrad;
+            ctx.beginPath();
+            ctx.arc(px, centerY, radiusPixels * 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Asperity Circle
+          ctx.beginPath();
+          ctx.arc(px, centerY, radiusPixels, 0, Math.PI * 2);
+          if (isFailed) {
+            ctx.fillStyle = asp.isMainshock ? '#ef4444' : '#f59e0b';
+          } else {
+            ctx.fillStyle = '#475569';
+          }
+          ctx.fill();
+          ctx.strokeStyle = isActive ? '#a855f7' : (asp.isMainshock ? '#ef4444' : '#cbd5e1');
+          ctx.lineWidth = isActive ? 3 : 1.5;
+          ctx.stroke();
+
+          // Asperity Label
+          ctx.fillStyle = '#e2e8f0';
+          ctx.font = asp.isMainshock ? 'bold 11px monospace' : '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(asp.isMainshock ? 'MAINSHOCK' : `P${asp.id}`, px, centerY + radiusPixels + 14);
+
+          // Stress gauge text
+          const currentT = isFailed ? (asp.strength - params.delta_tau).toFixed(1) : (asp.initialStress + (idx <= state.activePatchIndex ? idx * 0.8 : 0)).toFixed(1);
+          ctx.fillStyle = isFailed ? '#10b981' : (currentT >= asp.strength ? '#ef4444' : '#94a3b8');
+          ctx.fillText(`${currentT}/${asp.strength} MPa`, px, centerY - radiusPixels - 8);
+        });
+      }
+
+      // 3. Profiles View: Shear Stress Profile tau(x) & Moment Growth M0(t)
+      function renderProfilesView(ctx, w, h, state) {
+        const padding = { left: 55, right: 35, top: 25, bottom: 30 };
+        const graphW = w - padding.left - padding.right;
+        const halfH = (h - padding.top - padding.bottom) / 2;
+        const centerX = padding.left + graphW / 2;
+
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, w, h);
+
+        // Top Graph: Shear Stress Profile tau(x) along fault
+        const topY = padding.top + halfH / 2;
+        ctx.strokeStyle = '#1e293b';
+        ctx.beginPath(); ctx.moveTo(padding.left, topY); ctx.lineTo(w - padding.right, topY); ctx.stroke();
+
+        ctx.beginPath();
+        for (let x = padding.left; x <= w - padding.right; x++) {
+          const faultX = ((x - centerX) / (graphW / 2)) * (params.faultLengthKm / 2);
+
+          let stressVal = 10.0; // Base stress
+          if (state.isMainshock) {
+            stressVal = 6.0; // Massive fault-wide stress drop during mainshock
+          } else {
+            asperities.forEach((asp, idx) => {
+              const dist = Math.abs(faultX - asp.x);
+              if (dist < asp.radius) {
+                if (idx < state.subEventsTriggered) {
+                  stressVal -= params.delta_tau; // Stress drop inside failed patch
+                }
+              } else if (dist < asp.radius * 2.2) {
+                if (idx === state.activePatchIndex - 1) {
+                  stressVal += params.delta_tau * params.gamma; // Stress peak on neighboring patch tip
+                }
+              }
+            });
+          }
+
+          const py = topY - (stressVal - 8.0) * (halfH / 10);
+          if (x === padding.left) ctx.moveTo(x, py);
+          else ctx.lineTo(x, py);
+        }
+
+        ctx.strokeStyle = state.isMainshock ? '#ef4444' : '#10b981';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = state.isMainshock ? '#ef4444' : '#10b981';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(state.isMainshock ? 'Shear Stress Profile τ(x) [Fault-wide Dynamic Stress Drop]' : 'Shear Stress Profile τ(x) [Drop inside failed patches & peak concentrations]', padding.left + 10, padding.top + 15);
+
+        // Bottom Graph: Step-wise Cumulative Moment Growth M0(t)
+        const bottomTop = padding.top + halfH + 20;
+        ctx.strokeStyle = '#1e293b';
+        ctx.beginPath(); ctx.moveTo(padding.left, bottomTop + halfH); ctx.lineTo(w - padding.right, bottomTop + halfH); ctx.stroke();
+
+        ctx.beginPath();
+        const totalSteps = Math.floor(state.normTime * 100);
+        for (let s = 0; s <= totalSteps; s++) {
+          const st = getSimulationState(s * 10);
+          const px = padding.left + (st.normTime * graphW);
+          const logM = Math.log10(st.cumMoment); // ~13 to ~19.5
+          const py = (bottomTop + halfH) - ((logM - 12.5) / 7.5) * (halfH - 15);
+
+          if (s === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+
+        ctx.strokeStyle = '#ec4899';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ec4899';
+        ctx.fillText('Cumulative Moment Growth log10(M0) [Foreshock Cascade Escalation → Mainshock Jump]', padding.left + 10, bottomTop + 15);
+      }
+
+      // Update UI HUD Text Elements
+      function updateUI(state) {
+        document.getElementById('timeline-scrubber').value = currentStep;
+
+        const badge = document.getElementById('phase-badge');
+        badge.className = `px-2.5 py-1 text-xs font-semibold rounded-full border flex items-center gap-1.5 ${state.stageBadgeClass}`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-current animate-ping"></span>${state.stageName}`;
+
+        document.getElementById('hud-subevents').textContent = `${state.subEventsTriggered} / 5`;
+        document.getElementById('hud-moment').textContent = `${state.cumMoment.toExponential(2)} N·m`;
+        document.getElementById('hud-active-patch').textContent = state.isMainshock ? 'FULL FAULT' : `Asperity #${state.activePatchIndex + 1}`;
+        document.getElementById('hud-stress-transfer').textContent = `+${(params.delta_tau * params.gamma).toFixed(2)} MPa`;
+        document.getElementById('time-display').textContent = `t = ${(currentStep * 0.08).toFixed(2)} s`;
+
+        const title = document.getElementById('stage-title');
+        const desc = document.getElementById('stage-desc');
+
+        title.textContent = state.stageName;
+        switch (state.stage) {
+          case 1:
+            desc.textContent = 'Initial micro-earthquake ruptures asperity #1. Shear stress drops locally (Δτ) while strain energy radiates outwards.';
+            break;
+          case 2:
+            desc.textContent = 'Stress transfer from foreshock 1 increases shear stress on neighboring locked asperity #2 until it snaps.';
+            break;
+          case 3:
+            desc.textContent = 'Combined stress release from foreshocks 1 & 2 loads asperity #3 beyond its critical strength threshold (τ_crit).';
+            break;
+          case 4:
+            desc.textContent = 'Foreshock 4 ruptures a larger patch area, accelerating the total seismic moment release rate towards critical failure.';
+            break;
+          case 5:
+            desc.textContent = 'CASCADE BREAKDOWN: Stress transfer reaches critical threshold triggering dynamic, uncontained mainshock rupture across the main fault plane!';
+            break;
+        }
+      }
+
+      function animate(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const delta = (timestamp - lastTimestamp) / 1000;
+        lastTimestamp = timestamp;
+
+        if (isPlaying) {
+          currentStep += delta * 120 * animationSpeed;
+          if (currentStep >= 1000) {
+            if (isLooping) {
+              currentStep = 0;
+            } else {
+              currentStep = 1000;
+              isPlaying = false;
+              document.getElementById('play-icon').className = 'fa-solid fa-play';
+            }
+          }
+        }
+
+        const state = getSimulationState(currentStep);
+
+        renderMainCanvas(state);
+        updateUI(state);
+
+        requestAnimationFrame(animate);
+      }
+
+      // Event Controls Handlers
+      document.getElementById('btn-play').addEventListener('click', function() {
+        isPlaying = !isPlaying;
+        document.getElementById('play-icon').className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+      });
+
+      document.getElementById('btn-restart').addEventListener('click', function() {
+        currentStep = 0;
+        isPlaying = true;
+        document.getElementById('play-icon').className = 'fa-solid fa-pause';
+      });
+
+      document.getElementById('btn-step-fwd').addEventListener('click', function() {
+        isPlaying = false;
+        document.getElementById('play-icon').className = 'fa-solid fa-play';
+        currentStep = Math.min(1000, currentStep + 25);
+      });
+
+      document.getElementById('btn-step-back').addEventListener('click', function() {
+        isPlaying = false;
+        document.getElementById('play-icon').className = 'fa-solid fa-play';
+        currentStep = Math.max(0, currentStep - 25);
+      });
+
+      document.getElementById('btn-loop').addEventListener('click', function() {
+        isLooping = !isLooping;
+        this.classList.toggle('bg-purple-500/20', isLooping);
+        this.classList.toggle('text-purple-400', isLooping);
+      });
+
+      document.getElementById('btn-audio-toggle').addEventListener('click', function() {
+        audioEnabled = !audioEnabled;
+        const icon = document.getElementById('audio-icon');
+        const label = document.getElementById('audio-label');
+        if (audioEnabled) {
+          icon.className = 'fa-solid fa-volume-high text-purple-400';
+          label.textContent = 'Seismic Audio On';
+          playSeismicSound(200, 0.1);
+        } else {
+          icon.className = 'fa-solid fa-volume-xmark text-slate-400';
+          label.textContent = 'Seismic Audio Off';
+        }
+      });
+
+      document.getElementById('timeline-scrubber').addEventListener('input', function(e) {
+        currentStep = parseFloat(e.target.value);
+      });
+
+      document.getElementById('speed-select').addEventListener('change', function(e) {
+        animationSpeed = parseFloat(e.target.value);
+      });
+
+      // Tab View Switcher
+      document.getElementById('tab-space-time').addEventListener('click', function() {
+        activeTab = 'space-time';
+        updateTabStyles(this);
+      });
+
+      document.getElementById('tab-fault-asperities').addEventListener('click', function() {
+        activeTab = 'fault-asperities';
+        updateTabStyles(this);
+      });
+
+      document.getElementById('tab-profiles').addEventListener('click', function() {
+        activeTab = 'profiles';
+        updateTabStyles(this);
+      });
+
+      function updateTabStyles(activeBtn) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        activeBtn.classList.add('active');
+      }
+
+      // Slider Controls Bindings
+      document.getElementById('param-delta-tau').addEventListener('input', function(e) {
+        params.delta_tau = parseFloat(e.target.value);
+        document.getElementById('val-delta-tau').textContent = `${params.delta_tau.toFixed(1)} MPa`;
+      });
+
+      document.getElementById('param-gap').addEventListener('input', function(e) {
+        params.gap = parseFloat(e.target.value) / 100;
+        document.getElementById('val-gap').textContent = `${params.gap.toFixed(2)} km`;
+        initAsperities();
+      });
+
+      document.getElementById('param-strength').addEventListener('input', function(e) {
+        params.strength = parseFloat(e.target.value);
+        document.getElementById('val-strength').textContent = `${params.strength.toFixed(1)} MPa`;
+        initAsperities();
+      });
+
+      document.getElementById('param-gamma').addEventListener('input', function(e) {
+        params.gamma = parseFloat(e.target.value) / 100;
+        document.getElementById('val-gamma').textContent = `${params.gamma.toFixed(2)}`;
+      });
+
+      document.getElementById('btn-reset-params').addEventListener('click', function() {
+        params.delta_tau = 3.0;
+        params.gap = 0.35;
+        params.strength = 12.0;
+        params.gamma = 0.75;
+
+        document.getElementById('param-delta-tau').value = 3;
+        document.getElementById('param-gap').value = 35;
+        document.getElementById('param-strength').value = 12;
+        document.getElementById('param-gamma').value = 75;
+
+        document.getElementById('val-delta-tau').textContent = '3.0 MPa';
+        document.getElementById('val-gap').textContent = '0.35 km';
+        document.getElementById('val-strength').textContent = '12.0 MPa';
+        document.getElementById('val-gamma').textContent = '0.75';
+
+        initAsperities();
+      });
+
+      // Presets Selector
+      document.querySelectorAll('.btn-preset').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.btn-preset').forEach(b => {
+            b.classList.remove('active', 'border-purple-500/50', 'bg-purple-500/10');
+            b.classList.add('border-slate-700', 'bg-slate-800/50');
+          });
+          this.classList.add('active', 'border-purple-500/50', 'bg-purple-500/10');
+
+          const preset = this.getAttribute('data-preset');
+          initAsperities(preset);
+          currentStep = 0;
+        });
+      });
+
+      // Modal Handlers
+      const modal = document.getElementById('guide-modal');
+      document.getElementById('btn-guide-modal').addEventListener('click', () => modal.classList.remove('hidden'));
+      document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+      document.getElementById('btn-dismiss-modal').addEventListener('click', () => modal.classList.add('hidden'));
+
+      // Initialization
+      initAsperities('standard');
+      resizeCanvases();
+      requestAnimationFrame(animate);
+
+    })();
+  </script>
+</body>
+</html>
