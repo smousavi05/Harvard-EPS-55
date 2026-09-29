@@ -1,0 +1,1165 @@
+2ar<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthquake Nucleation: Pre-Slip Model & Space-Time Dynamics</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- KaTeX for crisp Math formatting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              950: '#020617',
+            },
+            seismic: {
+              creep: '#3b82f6',
+              preslip: '#f59e0b',
+              foreshock: '#ec4899',
+              rupture: '#ef4444',
+              stress: '#10b981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.8);
+    }
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn.active {
+      background-color: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.6);
+      color: #a5b4fc;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-gradient-to-tr from-amber-500 to-red-600 rounded-lg shadow-lg shadow-red-500/20 text-white">
+          <i class="fa-solid fa-bolt-lightning text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-orange-300 to-red-400">
+            Earthquake Nucleation: Pre-Slip & Space-Time (x-t) Model
+          </h1>
+          <h2 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-orange-300 to-red-400">
+            (Harvard EPS55)
+          </h2>
+          <p class="text-xs text-slate-400">
+            Accelerating Aseismic Pre-slip --> Foreshock Swarms --> Critical Nucleation Length (Lc) --> Dynamic Rupture
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Action Controls -->
+      <div class="flex items-center space-x-2">
+        <button id="btn-guide-modal" class="text-xs px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+          <span>Model Theory</span>
+        </button>
+        <button id="btn-record-video" class="text-xs px-3 py-1.5 rounded-md bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-medium shadow-md transition flex items-center gap-2">
+          <i class="fa-solid fa-video animate-pulse"></i>
+          <span id="record-btn-text">Record Canvas</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Main Column: Views & Visualizer Canvases (8 cols) -->
+    <div class="lg:col-span-8 flex flex-col space-y-4">
+
+      <!-- View Selector Tabs -->
+      <div class="flex items-center justify-between bg-slate-900/90 p-1.5 rounded-xl border border-slate-800 text-xs">
+        <div class="flex items-center space-x-1">
+          <button id="tab-space-time" class="tab-btn active px-3 py-1.5 rounded-lg border border-transparent font-medium transition flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-area text-amber-400"></i>
+            <span>Space-Time (x-t) Diagram</span>
+          </button>
+          <button id="tab-fault-block" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent font-medium transition flex items-center gap-1.5">
+            <i class="fa-solid fa-layer-group text-blue-400"></i>
+            <span>Fault Block & Asperities</span>
+          </button>
+          <button id="tab-profiles" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent font-medium transition flex items-center gap-1.5">
+            <i class="fa-solid fa-chart-line text-emerald-400"></i>
+            <span>Slip & Stress Profiles</span>
+          </button>
+        </div>
+
+        <div class="hidden sm:flex items-center space-x-3 text-[11px] text-slate-400 font-mono pr-2">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Non-seismic Slip</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-pink-500"></span> Foreshocks (Migrating to x=0)</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Dynamic Breakout (L >= Lc)</span>
+        </div>
+      </div>
+
+      <!-- Main Interactive Canvas Card -->
+      <div class="glass-panel rounded-2xl p-4 shadow-2xl relative overflow-hidden flex flex-col border border-slate-800">
+        
+        <!-- Status Header Banner -->
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-2">
+            <span id="phase-badge" class="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+              Stage 1: Quasi-Static Creep
+            </span>
+            <span id="time-display" class="text-xs font-mono text-slate-400">Time: 0.0 s</span>
+          </div>
+
+          <div class="flex items-center space-x-2 text-xs">
+            <span class="text-slate-400">Nucleation Patch (L):</span>
+            <span id="hud-l" class="font-mono text-amber-400 font-bold">0.10 km</span>
+            <span class="text-slate-500">/</span>
+            <span class="text-slate-400">Critical (Lc):</span>
+            <span id="hud-lc" class="font-mono text-red-400 font-bold">0.80 km</span>
+          </div>
+        </div>
+
+        <!-- Primary Drawing Canvas -->
+        <div class="relative w-full aspect-[16/9] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden shadow-inner flex items-center justify-center">
+          <canvas id="mainCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+          <!-- On-Canvas HUD Floating Information Overlay -->
+          <div class="absolute bottom-3 left-3 bg-slate-900/85 backdrop-blur border border-slate-800 p-2.5 rounded-lg text-xs space-y-1 text-slate-300 pointer-events-none shadow-lg">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-slate-400">Slip Speed (V):</span>
+              <span id="hud-v" class="font-mono text-amber-400 font-bold">1.0e-8 m/s</span>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-slate-400">Foreshock Activity Rate:</span>
+              <span id="hud-foreshock-rate" class="font-mono text-pink-400 font-bold">0 events/min</span>
+            </div>
+            <div class="flex items-center justify-between gap-4 text-[11px] text-pink-300/80">
+              <span class="text-slate-400">Foreshock Pattern:</span>
+              <span class="font-mono">Scattered in Slow Slip Area</span>
+            </div>
+            <div class="flex items-center justify-between gap-4 border-t border-slate-800 pt-1 mt-1 text-[11px]">
+              <span class="text-slate-400">Normal Stress (σn):</span>
+              <span id="hud-sigma" class="font-mono text-emerald-400">50 MPa</span>
+            </div>
+          </div>
+
+          <!-- Formula Overlay Badge -->
+          <!-- <div class="absolute top-3 right-3 bg-slate-900/85 backdrop-blur border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-amber-300 border-amber-500/30">
+             Lc ~ σn^-1
+          </div> -->
+        </div>
+
+        <!-- Playback Controls Bar -->
+        <div class="mt-4 bg-slate-900/90 rounded-xl p-3 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between gap-3">
+            
+            <!-- Controls Buttons -->
+            <div class="flex items-center space-x-1">
+              <button id="btn-restart" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Reset Animation">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+              <button id="btn-step-back" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Step Back">
+                <i class="fa-solid fa-backward-step"></i>
+              </button>
+              <button id="btn-play" class="p-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/30" title="Play/Pause">
+                <i id="play-icon" class="fa-solid fa-pause"></i>
+              </button>
+              <button id="btn-step-fwd" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Step Forward">
+                <i class="fa-solid fa-forward-step"></i>
+              </button>
+              <button id="btn-loop" class="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 transition" title="Toggle Loop">
+                <i class="fa-solid fa-repeat"></i>
+              </button>
+            </div>
+
+            <!-- Timeline Scrubber Slider -->
+            <div class="flex-1 px-2 flex items-center space-x-3">
+              <span class="text-xs text-slate-500 font-mono">0%</span>
+              <input type="range" id="timeline-scrubber" min="0" max="1000" value="0" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+              <span class="text-xs text-slate-500 font-mono">100%</span>
+            </div>
+
+            <!-- Speed Multiplier Dropdown -->
+            <div class="flex items-center space-x-1 bg-slate-800 rounded-lg p-1 text-xs">
+              <span class="text-slate-400 px-1"><i class="fa-solid fa-gauge-high"></i></span>
+              <select id="speed-select" class="bg-transparent text-slate-200 outline-none font-medium cursor-pointer">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="1.0" selected>1.0x</option>
+                <option value="2.0">2.0x</option>
+                <option value="4.0">4.0x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Sidebar Column: Parameters & Physics Explanations (4 cols) -->
+    <div class="lg:col-span-4 flex flex-col space-y-4">
+
+      <!-- Preset Selector Panel -->
+      <div class="glass-panel rounded-xl p-4 border border-slate-800 space-y-3">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-indigo-400"></i> Fault Regime Presets
+        </h2>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <button data-preset="standard" class="btn-preset active p-2.5 rounded-lg border border-indigo-500/50 bg-indigo-500/10 hover:bg-indigo-500/20 text-left transition">
+            <div class="font-semibold text-indigo-300">Deep Locked Fault</div>
+            <div class="text-[10px] text-slate-400">High σn, small Lc, localized pre-slip</div>
+          </button>
+          <button data-preset="shallow" class="btn-preset p-2.5 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 text-left transition">
+            <div class="font-semibold text-slate-300">Shallow Creeping Fault</div>
+            <div class="text-[10px] text-slate-400">Low σn, large Lc, broad pre-slip zone</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Rate & State Physics Sliders Card -->
+      <div class="glass-panel rounded-xl p-4 border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-atom text-emerald-400"></i> Rate & State Parameters
+          </h2>
+          <button id="btn-reset-params" class="text-[10px] text-slate-400 hover:text-slate-200 underline">Reset</button>
+        </div>
+
+        <!-- Slider 1: Effective Normal Stress σn (Key Lc Proportionality) -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Effective Normal Stress (σn):</label>
+            <span id="val-sigma" class="font-mono text-emerald-400 font-bold">50 MPa</span>
+          </div>
+          <input type="range" id="param-sigma" min="10" max="150" value="50" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-emerald-500">
+          <p class="text-[10px] text-emerald-300/80 bg-emerald-950/40 p-1.5 rounded border border-emerald-800/30 mt-1">
+            <i class="fa-solid fa-circle-info mr-1"></i> <strong class="font-mono">Lc ~ σn^-1</strong>: Higher normal stress shrinks critical nucleation patch size Lc.
+          </p>
+        </div>
+
+        <!-- Slider 2: Critical Slip Distance Dc -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Critical Slip Distance (Dc):</label>
+            <span id="val-dc" class="font-mono text-amber-400">20 µm</span>
+          </div>
+          <input type="range" id="param-dc" min="5" max="100" value="20" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-amber-500">
+          <p class="text-[10px] text-slate-500">Distance over which friction drops during slip breakdown.</p>
+        </div>
+
+        <!-- Slider 3: Friction Coefficient Difference (b - a) -->
+        <div class="space-y-1">
+          <div class="flex justify-between text-xs">
+            <label class="text-slate-300 font-medium">Friction Parameter (b - a):</label>
+            <span id="val-b-a" class="font-mono text-indigo-400">0.005</span>
+          </div>
+          <input type="range" id="param-b-a" min="1" max="20" value="5" class="w-full h-1.5 bg-slate-800 rounded appearance-none cursor-pointer accent-indigo-500">
+          <p class="text-[10px] text-slate-500">Velocity-weakening parameter (b-a > 0 required for instability).</p>
+        </div>
+
+      </div>
+
+      <!-- Stage Explanatory Walkthrough Box -->
+      <div class="glass-panel rounded-xl p-4 border border-slate-800 space-y-3">
+        <div class="flex items-center space-x-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+          <i class="fa-solid fa-circle-nodes"></i>
+          <span id="stage-title">Stage 1: Tectonic Stress Accumulation</span>
+        </div>
+        <p id="stage-desc" class="text-xs text-slate-300 leading-relaxed">
+          Far-field plate tectonics slowly build up shear stress (tau). Slip rate is negligible (V ~ 10^{-9}\text{ m/s}).
+        </p>
+        <div class="pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 space-y-1 font-mono">
+          <div class="flex justify-between">
+            <span>Critical Length Formula:</span>
+            <span class="text-amber-300">Lc = G . Dc / σn(b-a)]</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Guided Theory Dialog Modal -->
+  <div id="guide-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 text-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-book-open"></i> Seismological Pre-Slip Nucleation Model
+        </h3>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs leading-relaxed text-slate-300">
+        <p>
+          In modern earthquake physics (Dieterich 1992, Ellsworth & Beroza 1995), dynamic earthquake rupture is preceded by a period of <strong>accelerating non-seismic (aseismic) slip</strong> localized within a growing fault patch L(t).
+        </p>
+        
+        <div class="bg-slate-950/80 p-3 rounded-lg border border-slate-800 space-y-2 font-mono">
+          <div class="text-amber-300 font-bold">Key Nucleation Sequence:</div>
+          <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-300">
+            <li><strong>Quasi-static Creep:</strong> Tectonic motion loads fault shear stress tau.</li>
+            <li><strong>Accelerating Aseismic Pre-slip:</strong> Localized patch L begins slipping at sub-seismic speeds (V = 10^-6 m/s). Stress concentration at patch margins pushes nearby micro-asperities to fail as <strong>foreshocks</strong> (r(t) ~ 1/(tc - t)).</li>
+            <li><strong>Critical Nucleation Size (Lc):</strong> Unstable breakdown occurs when patch size reaches Lc. Notice that Lc ~ σn^-1.</li>
+            <li><strong>Dynamic Rupture Breakout:</strong> Slip velocity jumps from 10^-3 m/s to >1 m/s, propagating outwards at shear wave speed Vr ~ 0.9 Vs.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button id="btn-dismiss-modal" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-lg transition">
+          Got It - Explore Model
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Earthquake Pre-Slip Nucleation Simulation Engine */
+    (function() {
+      // Canvas references
+      const mainCanvas = document.getElementById('mainCanvas');
+      const ctxMain = mainCanvas.getContext('2d');
+
+      // State Variables
+      let isPlaying = true;
+      let isLooping = true;
+      let activeTab = 'space-time'; // 'space-time', 'fault-block', 'profiles'
+      let currentStep = 0; // 0 to 1000
+      let animationSpeed = 1.0;
+      let lastTimestamp = 0;
+
+      // Rate & State Physics Parameters
+      let params = {
+        sigma_n: 50,      // Effective Normal Stress (MPa)
+        Dc: 20,           // Critical Slip Distance (µm)
+        b_minus_a: 0.005, // Friction parameter difference
+        G: 30000          // Shear Modulus (MPa)
+      };
+
+      // Computed Critical Nucleation Patch Size (L_c)
+      let L_c = 0.80; // km
+
+      // Micro-seismic foreshock events log (persisted for space-time migration display)
+      let foreshockEvents = []; // { xKm, normTime, step, mag, age }
+      let foreshockRings = [];   // Active visual animation ripples
+      let seismogramBuffer = new Array(160).fill(0);
+      let velocityHistory = [];
+      let foreshockRateHistory = [];
+      const historyLength = 200;
+
+      // Pre-generated Micro-asperities array along fault plane
+      const faultLengthKm = 3.0;
+      let asperities = [];
+
+      function initAsperities() {
+        asperities = [];
+        foreshockEvents = [];
+        foreshockRings = [];
+        const count = 36;
+        for (let i = 0; i < count; i++) {
+          const posX = (i / (count - 1)) * faultLengthKm - (faultLengthKm / 2); // -1.5 to +1.5 km
+          if (Math.abs(posX) > 0.05) {
+            asperities.push({
+              x: posX,
+              strength: 0.5 + Math.random() * 0.5,
+              failed: false,
+              lastTriggerStep: -999
+            });
+          }
+        }
+      }
+
+      // Initialize canvas DPR resolution
+      function resizeCanvases() {
+        const dpr = window.devicePixelRatio || 1;
+        [mainCanvas].forEach(canvas => {
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width * dpr;
+          canvas.height = rect.height * dpr;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(dpr, dpr);
+        });
+      }
+
+      window.addEventListener('resize', resizeCanvases);
+
+      // Compute Critical Patch Length Lc = (G * D_c) / (σn * (b - a))
+      function updatePhysics() {
+        const Dc_m = params.Dc * 1e-6;
+        const sigma_Pa = params.sigma_n * 1e6;
+        const G_Pa = params.G * 1e6;
+
+        // Proportionality L_c ~ 1 / σn
+        L_c = (0.5 * G_Pa * Dc_m) / (sigma_Pa * params.b_minus_a) / 10;
+        L_c = Math.max(0.20, Math.min(2.50, L_c));
+
+        document.getElementById('hud-lc').textContent = `${L_c.toFixed(2)} km`;
+        document.getElementById('hud-sigma').textContent = `${params.sigma_n} MPa`;
+      }
+
+      // Compute physics state at animation progress frame `step` (0 -> 1000)
+      function getSimulationState(step) {
+        const normTime = step / 1000; // 0.0 to 1.0
+
+        let stage = 1;
+        let stageName = 'Stage 1: Quasi-Static Creep';
+        let slipVel = 1e-9; // m/s
+        let patchSize = 0.05; // km
+        let foreshockRate = 0; // events/min
+        let stageBadgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+
+        if (normTime < 0.28) {
+          // Stage 1: Tectonic creep loading
+          stage = 1;
+          stageName = 'Stage 1: Far-field Tectonic Loading';
+          slipVel = 1e-9 + (normTime / 0.28) * 1e-8;
+          patchSize = 0.05 + normTime * 0.12;
+          foreshockRate = 0;
+          stageBadgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+        } else if (normTime < 0.62) {
+          // Stage 2: Accelerating Aseismic Pre-slip Zone
+          stage = 2;
+          stageName = 'Stage 2: Accelerating Aseismic Pre-Slip';
+          const p2 = (normTime - 0.28) / 0.34;
+          slipVel = 1e-7 * Math.exp(p2 * 4.8); // 10^-7 to 10^-4 m/s
+          patchSize = 0.08 + p2 * (L_c * 0.85 - 0.08); // Expanding pre-slip patch
+          foreshockRate = Math.floor(Math.pow(p2, 2.0) * 8);
+          stageBadgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+        } else if (normTime < 0.80) {
+          // Stage 3: Critical Nucleation Acceleration (L -> L_c)
+          stage = 3;
+          stageName = 'Stage 3: Critical Nucleation (L → L_c)';
+          const p3 = (normTime - 0.62) / 0.18;
+          slipVel = 1e-4 * Math.exp(p3 * 6.9); // Rapid exponential surge
+          patchSize = L_c * 0.85 + p3 * (L_c * 0.15); // Approaching L_c
+          
+          foreshockRate = Math.floor(8 + 22 * p3);
+          stageBadgeClass = 'bg-orange-500/20 text-orange-300 border-orange-500/30';
+        } else {
+          // Stage 4: Unstable Dynamic Rupture Breakout
+          stage = 4;
+          stageName = 'Stage 4: Dynamic Rupture Breakout (Earthquake)';
+          const p4 = (normTime - 0.80) / 0.20;
+          slipVel = 1.0 + p4 * 9.0; // Dynamic velocity 1-10 m/s
+          patchSize = L_c + p4 * 3.8; // Dynamic expansion past L_c
+          foreshockRate = 35;
+          stageBadgeClass = 'bg-red-500/20 text-red-300 border-red-500/30';
+        }
+
+        return {
+          normTime,
+          stage,
+          stageName,
+          slipVel,
+          patchSize,
+          foreshockRate,
+          stageBadgeClass
+        };
+      }
+
+      // Master Canvas Rendering Dispatcher
+      function renderMainCanvas(state) {
+        const w = mainCanvas.clientWidth;
+        const h = mainCanvas.clientHeight;
+        ctxMain.clearRect(0, 0, w, h);
+
+        if (activeTab === 'space-time') {
+          renderSpaceTimeDiagram(ctxMain, w, h, state);
+        } else if (activeTab === 'fault-block') {
+          renderFaultBlockView(ctxMain, w, h, state);
+        } else if (activeTab === 'profiles') {
+          renderProfilesView(ctxMain, w, h, state);
+        }
+
+        updateForeshockParticles(ctxMain, w, h, state);
+      }
+
+      // 1. Canonical Space-Time (x - t) Seismology Diagram
+      function renderSpaceTimeDiagram(ctx, w, h, state) {
+        const padding = { left: 50, right: 30, top: 40, bottom: 40 };
+        const graphW = w - padding.left - padding.right;
+        const graphH = h - padding.top - padding.bottom;
+
+        // Axes Background Grid
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        // Horizontal time lines
+        for (let y = padding.top; y <= h - padding.bottom; y += graphH / 5) {
+          ctx.beginPath();
+          ctx.moveTo(padding.left, y);
+          ctx.lineTo(w - padding.right, y);
+          ctx.stroke();
+        }
+        // Vertical fault distance lines
+        for (let x = padding.left; x <= w - padding.right; x += graphW / 6) {
+          ctx.beginPath();
+          ctx.moveTo(x, padding.top);
+          ctx.lineTo(x, h - padding.bottom);
+          ctx.stroke();
+        }
+
+        // Axes Labels
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Fault Distance x (km)', padding.left + graphW / 2, h - 10);
+
+        ctx.save();
+        ctx.translate(15, padding.top + graphH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('Time t (seconds)', 0, 0);
+        ctx.restore();
+
+        // Fault Center Line x = 0 (Hypocenter Nucleation Core)
+        const centerX = padding.left + graphW / 2;
+        ctx.strokeStyle = '#38bdf8';
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(centerX, padding.top);
+        ctx.lineTo(centerX, h - padding.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Label Hypocenter x=0
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+
+        // Plot Expanding Aseismic Slip Wedge envelope in x-t space
+        const totalSteps = Math.floor(state.normTime * 100);
+        if (totalSteps > 1) {
+          ctx.beginPath();
+          // Right envelope curve
+          for (let s = 0; s <= totalSteps; s++) {
+            const st = getSimulationState(s * 10);
+            const py = (h - padding.bottom) - (st.normTime * graphH);
+            const px = centerX + (st.patchSize / faultLengthKm) * (graphW / 2);
+            if (s === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          // Left envelope curve
+          for (let s = totalSteps; s >= 0; s--) {
+            const st = getSimulationState(s * 10);
+            const py = (h - padding.bottom) - (st.normTime * graphH);
+            const px = centerX - (st.patchSize / faultLengthKm) * (graphW / 2);
+            ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+
+          // Gradient fill for non-seismic pre-slip wedge
+          let wedgeGrad = ctx.createLinearGradient(0, h - padding.bottom, 0, padding.top);
+          wedgeGrad.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
+          wedgeGrad.addColorStop(0.6, 'rgba(245, 158, 11, 0.35)');
+          wedgeGrad.addColorStop(0.8, 'rgba(249, 115, 22, 0.55)');
+          wedgeGrad.addColorStop(1.0, 'rgba(239, 68, 68, 0.75)');
+
+          ctx.fillStyle = wedgeGrad;
+          ctx.fill();
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+
+        // Render Historical Foreshock Events on Space-Time (x-t) Plot to show inward migration toward x=0
+        foreshockEvents.forEach(evt => {
+          if (evt.normTime <= state.normTime) {
+            const px = centerX + (evt.xKm / faultLengthKm) * (graphW / 2);
+            const py = (h - padding.bottom) - (evt.normTime * graphH);
+
+            // Time decay fade for older foreshocks
+            const timeDiff = state.normTime - evt.normTime;
+            const alpha = Math.max(0.25, 1.0 - timeDiff * 2.2);
+
+            ctx.beginPath();
+            ctx.arc(px, py, 2.5 + evt.mag * 2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(244, 114, 182, ${alpha})`;
+            ctx.fill();
+            ctx.strokeStyle = `rgba(236, 72, 153, ${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        });
+
+        // Critical Length L_c Markers on Diagram
+        const LcPixelHalf = (L_c / faultLengthKm) * (graphW / 2);
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.8)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+
+        ctx.beginPath();
+        ctx.moveTo(centerX - LcPixelHalf, padding.top);
+        ctx.lineTo(centerX - LcPixelHalf, h - padding.bottom);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(centerX + LcPixelHalf, padding.top);
+        ctx.lineTo(centerX + LcPixelHalf, h - padding.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Label for Critical Patch Length Lc
+        ctx.fillStyle = '#fca5a5';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Critical Nucleation Boundaries ±L_c/2 (${L_c.toFixed(2)} km)`, centerX, padding.top + 15);
+
+        // Current Time horizontal cursor line
+        const currentY = (h - padding.bottom) - (state.normTime * graphH);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, currentY);
+        ctx.lineTo(w - padding.right, currentY);
+        ctx.stroke();
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(`t = ${(currentStep * 0.15).toFixed(1)} s`, padding.left + 5, currentY - 4);
+      }
+
+      // 2. Fault Block Crustal Cross-Section View
+      function renderFaultBlockView(ctx, w, h, state) {
+        const centerY = h * 0.5;
+        const faultStart = w * 0.12;
+        const faultEnd = w * 0.88;
+        const faultW = faultEnd - faultStart;
+
+        // Top Hanging Wall Block
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, centerY);
+
+        // Strata lines
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        for (let y = 20; y < centerY; y += 25) {
+          ctx.beginPath();
+          ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        // Bottom Footwall Block
+        ctx.fillStyle = '#090d16';
+        ctx.fillRect(0, centerY, w, h - centerY);
+        for (let y = centerY + 25; y < h; y += 25) {
+          ctx.beginPath();
+          ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        // Fault Interface Line
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(faultStart, centerY);
+        ctx.lineTo(faultEnd, centerY);
+        ctx.stroke();
+
+        // Render Micro-Asperities along fault interface
+        asperities.forEach(asp => {
+          const aspX = w * 0.5 + (asp.x / faultLengthKm) * faultW;
+          ctx.fillStyle = asp.failed ? '#ef4444' : '#64748b';
+          ctx.beginPath();
+          ctx.arc(aspX, centerY, asp.failed ? 5 : 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Expanding Aseismic Slip Zone glowing envelope
+        const patchPixelHalf = (state.patchSize / faultLengthKm) * (faultW / 2);
+        const pX1 = Math.max(faultStart, w * 0.5 - patchPixelHalf);
+        const pX2 = Math.min(faultEnd, w * 0.5 + patchPixelHalf);
+
+        let patchColor = '#3b82f6';
+        if (state.stage === 2) patchColor = '#f59e0b';
+        if (state.stage === 3) patchColor = '#f97316';
+        if (state.stage === 4) patchColor = '#ef4444';
+
+        const grad = ctx.createLinearGradient(pX1, 0, pX2, 0);
+        grad.addColorStop(0, 'rgba(245, 158, 11, 0)');
+        grad.addColorStop(0.2, patchColor);
+        grad.addColorStop(0.8, patchColor);
+        grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = state.stage >= 2 ? 14 : 8;
+        ctx.shadowColor = patchColor;
+        ctx.shadowBlur = state.stage >= 3 ? 20 : 8;
+        ctx.beginPath();
+        ctx.moveTo(pX1, centerY);
+        ctx.lineTo(pX2, centerY);
+        ctx.stroke();
+        ctx.shadowBlur = 0; // Reset
+
+        // Dynamic Rupture Radiating Waves (Stage 4)
+        if (state.stage === 4) {
+          const radius = (state.normTime - 0.80) * faultW * 1.8;
+          ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(w * 0.5, centerY, radius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Dimension lines for L and L_c
+        const LcPixelHalf = (L_c / faultLengthKm) * (faultW / 2);
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+
+        ctx.beginPath();
+        ctx.moveTo(w * 0.5 - LcPixelHalf, centerY - 25);
+        ctx.lineTo(w * 0.5 - LcPixelHalf, centerY + 25);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(w * 0.5 + LcPixelHalf, centerY - 25);
+        ctx.lineTo(w * 0.5 + LcPixelHalf, centerY + 25);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#fca5a5';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Critical Patch L_c = ${L_c.toFixed(2)} km`, w * 0.5, centerY - 32);
+
+        if (state.stage >= 2) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.fillText(`Aseismic Slip Patch L = ${state.patchSize.toFixed(2)} km`, w * 0.5, centerY + 38);
+        }
+      }
+
+      // 3. Profiles View: Cumulative Slip D(x) & Shear Stress tau(x)
+      function renderProfilesView(ctx, w, h, state) {
+        const padding = { left: 50, right: 30, top: 25, bottom: 30 };
+        const graphW = w - padding.left - padding.right;
+        const halfH = (h - padding.top - padding.bottom) / 2;
+
+        // Top Graph: Cumulative Fault Slip D(x)
+        ctx.fillStyle = '#020617';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, padding.top + halfH);
+        ctx.lineTo(w - padding.right, padding.top + halfH);
+        ctx.stroke();
+
+        // Draw Slip profile curve D(x)
+        ctx.beginPath();
+        const centerX = padding.left + graphW / 2;
+        const patchPixelHalf = (state.patchSize / faultLengthKm) * (graphW / 2);
+
+        for (let x = padding.left; x <= w - padding.right; x++) {
+          const dist = Math.abs(x - centerX);
+          let slipVal = 0;
+          if (dist < patchPixelHalf) {
+            slipVal = Math.cos((dist / patchPixelHalf) * (Math.PI / 2)); // Cosine slip profile
+          }
+          const y = (padding.top + halfH - 10) - (slipVal * (halfH - 20) * (state.stage >= 4 ? 1.0 : state.normTime));
+          if (x === padding.left) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('Cumulative Slip Profile D(x)', padding.left + 10, padding.top + 15);
+
+        // Bottom Graph: Shear Stress Profile tau(x)
+        const bottomTop = padding.top + halfH + 15;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, bottomTop + halfH / 2);
+        ctx.lineTo(w - padding.right, bottomTop + halfH / 2);
+        ctx.strokeStyle = '#1e293b';
+        ctx.stroke();
+
+        // Shear Stress Curve with stress drop inside patch and stress concentration tips at crack edges
+        ctx.beginPath();
+        for (let x = padding.left; x <= w - padding.right; x++) {
+          const dist = Math.abs(x - centerX);
+          let stressDev = 0;
+          if (dist < patchPixelHalf) {
+            stressDev = -0.6 * (1 - Math.pow(dist / patchPixelHalf, 2)); // Stress drop inside patch
+          } else if (dist < patchPixelHalf * 1.25) {
+            stressDev = 0.8 * Math.exp(-Math.pow((dist - patchPixelHalf) / 10, 2)); // Stress peak at crack tip
+          }
+          const y = (bottomTop + halfH / 2) - (stressDev * (halfH / 2.5));
+          if (x === padding.left) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#10b981';
+        ctx.fillText('Shear Stress Profile τ(x) [Stress Drop & Edge Peak Concentration]', padding.left + 10, bottomTop + 15);
+      }
+
+      // Update and render active micro-seismic foreshocks
+      function updateForeshockParticles(ctx, w, h, state) {
+        // Trigger foreshocks sparsely during Stage 2 & Stage 3
+        if ((state.stage === 2 || state.stage === 3) && Math.random() < 0.045) {
+          
+          const halfPatchKm = state.patchSize / 2;
+          
+          // Scatter position uniformly across interior and edge of slow slip zone [-1.05, +1.05]
+          const relativePos = (Math.random() - 0.5) * 2.1;
+          const foreshockXKm = relativePos * halfPatchKm;
+
+          // Store event in persistent space-time history log
+          const evtMag = 0.2 + Math.random() * 0.7;
+          foreshockEvents.push({
+            xKm: foreshockXKm,
+            normTime: state.normTime,
+            step: currentStep,
+            mag: evtMag
+          });
+
+          // Compute canvas screen pixel coordinate for animated ripple
+          const graphW = w - 80;
+          const centerX = w * 0.5;
+          const posXPixel = centerX + (foreshockXKm / faultLengthKm) * graphW;
+
+          foreshockRings.push({
+            x: posXPixel,
+            y: h * 0.5 + (Math.random() - 0.5) * 12,
+            radius: 1,
+            maxRadius: 10 + evtMag * 15,
+            alpha: 1.0,
+            color: evtMag > 0.6 ? '#f43f5e' : '#ec4899'
+          });
+
+          // Trigger nearest micro-asperity failure
+          asperities.forEach(asp => {
+            if (Math.abs(asp.x - foreshockXKm) < 0.15) {
+              asp.failed = true;
+            }
+          });
+
+          // Inject seismic wave pulse into seismogram trace buffer
+          seismogramBuffer.push((Math.random() - 0.5) * (state.stage >= 3 ? 0.9 : 0.45) * evtMag);
+        } else {
+          seismogramBuffer.push((Math.random() - 0.5) * 0.04);
+        }
+
+        if (seismogramBuffer.length > 160) seismogramBuffer.shift();
+
+        // Render animated expansion wavelets for active foreshock bursts
+        for (let i = foreshockRings.length - 1; i >= 0; i--) {
+          const f = foreshockRings[i];
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = f.color;
+          ctx.globalAlpha = f.alpha;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          f.radius += 0.8;
+          f.alpha -= 0.045;
+
+          if (f.alpha <= 0) foreshockRings.splice(i, 1);
+        }
+        ctx.globalAlpha = 1.0;
+      }
+
+      // Render Log Velocity Chart
+      function renderVelocityChart() {
+        const w = velocityCanvas.clientWidth;
+        const h = velocityCanvas.clientHeight;
+        ctxVelocity.clearRect(0, 0, w, h);
+
+        ctxVelocity.strokeStyle = '#1e293b';
+        ctxVelocity.lineWidth = 1;
+        for (let y = 15; y < h; y += 25) {
+          ctxVelocity.beginPath(); ctxVelocity.moveTo(0, y); ctxVelocity.lineTo(w, y); ctxVelocity.stroke();
+        }
+
+        if (velocityHistory.length < 2) return;
+
+        ctxVelocity.beginPath();
+        for (let i = 0; i < velocityHistory.length; i++) {
+          const x = (i / historyLength) * w;
+          const logV = Math.log10(velocityHistory[i]); // -9 to +1
+          const normY = (logV - (-9)) / (1 - (-9));
+          const y = h - 10 - normY * (h - 20);
+
+          if (i === 0) ctxVelocity.moveTo(x, y);
+          else ctxVelocity.lineTo(x, y);
+        }
+
+        ctxVelocity.strokeStyle = '#f59e0b';
+        ctxVelocity.lineWidth = 2;
+        ctxVelocity.stroke();
+      }
+
+      // Render Foreshock Rate & Seismogram
+      function renderForeshockChart() {
+        const w = foreshockCanvas.clientWidth;
+        const h = foreshockCanvas.clientHeight;
+        ctxForeshock.clearRect(0, 0, w, h);
+
+        // Seismogram Trace
+        ctxForeshock.beginPath();
+        for (let i = 0; i < seismogramBuffer.length; i++) {
+          const x = (i / seismogramBuffer.length) * w;
+          const val = seismogramBuffer[i];
+          const y = h * 0.5 + val * (h * 0.4);
+
+          if (i === 0) ctxForeshock.moveTo(x, y);
+          else ctxForeshock.lineTo(x, y);
+        }
+        ctxForeshock.strokeStyle = '#ec4899';
+        ctxForeshock.lineWidth = 1.2;
+        ctxForeshock.stroke();
+      }
+
+      function updateUI(state) {
+        document.getElementById('timeline-scrubber').value = currentStep;
+
+        const badge = document.getElementById('phase-badge');
+        badge.className = `px-2.5 py-1 text-xs font-semibold rounded-full border flex items-center gap-1.5 ${state.stageBadgeClass}`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-current animate-ping"></span>${state.stageName}`;
+
+        document.getElementById('hud-v').textContent = `${state.slipVel.toExponential(2)} m/s`;
+        document.getElementById('hud-l').textContent = `${state.patchSize.toFixed(2)} km`;
+        document.getElementById('hud-foreshock-rate').textContent = `${state.foreshockRate} events/min`;
+        document.getElementById('time-display').textContent = `Time: ${(currentStep * 0.15).toFixed(1)} s`;
+
+        const title = document.getElementById('stage-title');
+        const desc = document.getElementById('stage-desc');
+
+        switch (state.stage) {
+          case 1:
+            title.textContent = 'Stage 1: Quasi-Static Creep Loading';
+            desc.textContent = 'Tectonic motion slowly accumulates shear stress. Slip velocity remains negligible (V ~ 10^-9 m/s).';
+            break;
+          case 2:
+            title.textContent = 'Stage 2: Accelerating Aseismic Pre-Slip & Scattered Foreshocks';
+            desc.textContent = 'Non-seismic slow slip accelerates (V = 10^-6 m/s) over an expanding localized patch (L). Occasional micro-earthquakes occur scattered randomly inside and along the patch margins.';
+            break;
+          case 3:
+            title.textContent = 'Stage 3: Critical Nucleation Instability (L → Lc)';
+            desc.textContent = 'The non-seismic pre-slip zone reaches critical patch size Lc ~ σn^-1. Scattered foreshock activity continues as exponential acceleration drives full fault instability.';
+            break;
+          case 4:
+            title.textContent = 'Stage 4: Unstable Dynamic Rupture Breakout';
+            desc.textContent = 'Slip velocity jumps above 1 m/s. The pre-slip nucleation zone breaks out at the hypocenter (x = 0) into runaway dynamic earthquake propagation radiating seismic shear waves!';
+            break;
+        }
+      }
+
+      function animate(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const delta = (timestamp - lastTimestamp) / 1000;
+        lastTimestamp = timestamp;
+
+        if (isPlaying) {
+          currentStep += delta * 120 * animationSpeed;
+          if (currentStep >= 1000) {
+            if (isLooping) {
+              currentStep = 0;
+              velocityHistory = [];
+              foreshockRateHistory = [];
+              initAsperities();
+            } else {
+              currentStep = 1000;
+              isPlaying = false;
+              document.getElementById('play-icon').className = 'fa-solid fa-play';
+            }
+          }
+        }
+
+        const state = getSimulationState(currentStep);
+
+        velocityHistory.push(state.slipVel);
+        foreshockRateHistory.push(state.foreshockRate);
+        if (velocityHistory.length > historyLength) velocityHistory.shift();
+        if (foreshockRateHistory.length > historyLength) foreshockRateHistory.shift();
+
+        renderMainCanvas(state);
+        updateUI(state);
+
+        requestAnimationFrame(animate);
+      }
+
+      // Controls & Event Listeners
+      document.getElementById('btn-play').addEventListener('click', function() {
+        isPlaying = !isPlaying;
+        document.getElementById('play-icon').className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+      });
+
+      document.getElementById('btn-restart').addEventListener('click', function() {
+        currentStep = 0;
+        velocityHistory = [];
+        foreshockRateHistory = [];
+        initAsperities();
+        isPlaying = true;
+        document.getElementById('play-icon').className = 'fa-solid fa-pause';
+      });
+
+      document.getElementById('btn-step-fwd').addEventListener('click', function() {
+        isPlaying = false;
+        document.getElementById('play-icon').className = 'fa-solid fa-play';
+        currentStep = Math.min(1000, currentStep + 25);
+      });
+
+      document.getElementById('btn-step-back').addEventListener('click', function() {
+        isPlaying = false;
+        document.getElementById('play-icon').className = 'fa-solid fa-play';
+        currentStep = Math.max(0, currentStep - 25);
+      });
+
+      document.getElementById('btn-loop').addEventListener('click', function() {
+        isLooping = !isLooping;
+        this.classList.toggle('bg-indigo-500/20', isLooping);
+        this.classList.toggle('text-indigo-400', isLooping);
+      });
+
+      document.getElementById('timeline-scrubber').addEventListener('input', function(e) {
+        currentStep = parseFloat(e.target.value);
+      });
+
+      document.getElementById('speed-select').addEventListener('change', function(e) {
+        animationSpeed = parseFloat(e.target.value);
+      });
+
+      // Tab View Switcher
+      document.getElementById('tab-space-time').addEventListener('click', function() {
+        activeTab = 'space-time';
+        updateTabStyles(this);
+      });
+
+      document.getElementById('tab-fault-block').addEventListener('click', function() {
+        activeTab = 'fault-block';
+        updateTabStyles(this);
+      });
+
+      document.getElementById('tab-profiles').addEventListener('click', function() {
+        activeTab = 'profiles';
+        updateTabStyles(this);
+      });
+
+      function updateTabStyles(activeBtn) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        activeBtn.classList.add('active');
+      }
+
+      // Parameters Sliders Binding
+      document.getElementById('param-sigma').addEventListener('input', function(e) {
+        params.sigma_n = parseFloat(e.target.value);
+        document.getElementById('val-sigma').textContent = `${params.sigma_n} MPa`;
+        updatePhysics();
+      });
+
+      document.getElementById('param-dc').addEventListener('input', function(e) {
+        params.Dc = parseFloat(e.target.value);
+        document.getElementById('val-dc').textContent = `${params.Dc} µm`;
+        updatePhysics();
+      });
+
+      document.getElementById('param-b-a').addEventListener('input', function(e) {
+        params.b_minus_a = parseFloat(e.target.value) / 1000;
+        document.getElementById('val-b-a').textContent = `${params.b_minus_a.toFixed(3)}`;
+        updatePhysics();
+      });
+
+      document.getElementById('btn-reset-params').addEventListener('click', function() {
+        params.sigma_n = 50;
+        params.Dc = 20;
+        params.b_minus_a = 0.005;
+
+        document.getElementById('param-sigma').value = 50;
+        document.getElementById('param-dc').value = 20;
+        document.getElementById('param-b-a').value = 5;
+
+        document.getElementById('val-sigma').textContent = '50 MPa';
+        document.getElementById('val-dc').textContent = '20 µm';
+        document.getElementById('val-b-a').textContent = '0.005';
+
+        updatePhysics();
+      });
+
+      // Presets Selector
+      document.querySelectorAll('.btn-preset').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.btn-preset').forEach(b => {
+            b.classList.remove('active', 'border-indigo-500/50', 'bg-indigo-500/10');
+            b.classList.add('border-slate-700', 'bg-slate-800/50');
+          });
+          this.classList.add('active', 'border-indigo-500/50', 'bg-indigo-500/10');
+
+          const preset = this.getAttribute('data-preset');
+          if (preset === 'standard') {
+            params.sigma_n = 90; params.Dc = 15; params.b_minus_a = 0.006;
+          } else if (preset === 'shallow') {
+            params.sigma_n = 20; params.Dc = 40; params.b_minus_a = 0.003;
+          }
+
+          document.getElementById('param-sigma').value = params.sigma_n;
+          document.getElementById('param-dc').value = params.Dc;
+          document.getElementById('param-b-a').value = params.b_minus_a * 1000;
+
+          document.getElementById('val-sigma').textContent = `${params.sigma_n} MPa`;
+          document.getElementById('val-dc').textContent = `${params.Dc} µm`;
+          document.getElementById('val-b-a').textContent = `${params.b_minus_a.toFixed(3)}`;
+
+          updatePhysics();
+          currentStep = 0;
+          initAsperities();
+        });
+      });
+
+      // Modal Theory Event Handlers
+      const modal = document.getElementById('guide-modal');
+      document.getElementById('btn-guide-modal').addEventListener('click', () => modal.classList.remove('hidden'));
+      document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+      document.getElementById('btn-dismiss-modal').addEventListener('click', () => modal.classList.add('hidden'));
+
+      // Initialization
+      initAsperities();
+      resizeCanvases();
+      updatePhysics();
+      requestAnimationFrame(animate);
+
+    })();
+  </script>
+</body>
+</html>
