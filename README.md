@@ -115,7 +115,7 @@ Understand the physics - why normal stress increases shear resistance
 <table>
   <tr align="center">
     <th>Pre-Slip Model!</th>
-    <th>Interactive Rupture Dynamics Explorer!</th>
+    <th>Cascade Model!</th>
   </tr>
   
   <tr align="center">
@@ -125,8 +125,8 @@ Understand the physics - why normal stress increases shear resistance
       </a>
     </td>
     <td>
-      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_rupture_dynamics.html">
-        <img src="interactive_visualizations/viz__l07_rupture_dynamics.png" alt="Interactive Figure Preview" width="200">
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz_l07_earthquake_cascade_model_visualizer.html">
+        <img src="interactive_visualizations/viz_l07_earthquake_cascade_model_visualizer.png" alt="Interactive Figure Preview" width="200">
       </a>
     </td>
   </tr>
