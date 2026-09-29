@@ -114,6 +114,28 @@ Understand the physics - why normal stress increases shear resistance
 
 <table>
   <tr align="center">
+    <th>Pre-Slip Model!</th>
+    <th>Interactive Rupture Dynamics Explorer!</th>
+  </tr>
+  
+  <tr align="center">
+    <td>
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz_l07_earthquake_pre_slip_model_visualizer.html">
+        <img src="interactive_visualizations/viz_l07_earthquake_pre_slip_model_visualizer.png" alt="Interactive Figure Preview" width="200">
+      </a>
+    </td>
+    <td>
+      <a href="https://smousavi05.github.io/Harvard-EPS-55/interactive_visualizations/viz__l07_rupture_dynamics.html">
+        <img src="interactive_visualizations/viz__l07_rupture_dynamics.png" alt="Interactive Figure Preview" width="200">
+      </a>
+    </td>
+  </tr>
+</table>
+
+
+
+<table>
+  <tr align="center">
     <th>Far-Field Apparent Rupture!</th>
     <th>Directivity Explorer!</th>
     <th>Earthquake Directivity Effects!</th>
